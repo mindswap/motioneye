@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER MindSwap <mind.swap@yandex.ru>
+MAINTAINER MindSwap <mindswap@ro.ru>
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV export LANGUAGE=en_US.UTF-8
