@@ -8,10 +8,6 @@ RUN	apt-get update && \
 	v4l-utils \
 	python-pip \
 	python-dev \
-	tornado \
-	jinja2 \
-	pillow \
-	pycurl \
 	curl \
 	libssl-dev \
 	libcurl4-openssl-dev \
