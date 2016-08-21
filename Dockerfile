@@ -1,45 +1,36 @@
 FROM ubuntu:16.04
 MAINTAINER MindSwap <mindswap@ro.ru>
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV export LANGUAGE=en_US.UTF-8
-ENV export LC_ALL=en_US.UTF-8
-ENV export LANG=en_US.UTF-8
-ENV export LC_TYPE=en_US.UTF-8
+RUN	apt-get update && \
+	apt-get install -q -y --no-install-recommends \
+	motion \
+	ffmpeg \
+	v4l-utils \
+	python-pip \
+	python-dev \
+	tornado \
+	jinja2 \
+	pillow \
+	pycurl \
+	curl \
+	libssl-dev \
+	libcurl4-openssl-dev \
+	libjpeg-dev && \
+	apt-get -y clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+		
+RUN	pip install --upgrade pip && \
+	pip install motioneye
+	
+RUN	mkdir -p /etc/motioneye  && \
+	cp /usr/local/share/motioneye/extra/motioneye.conf.sample /etc/motioneye/motioneye.conf && \
+	mkdir -p /var/lib/motioneye && \
+	cp /usr/local/share/motioneye/extra/motioneye.init-debian /etc/init.d/motioneye && \
+	chmod +x /etc/init.d/motioneye
 
-RUN apt-get update
+RUN	update-rc.d -f motioneye defaults && \
+	/etc/init.d/motioneye start
+	
+EXPOSE 8765	
 
-# Core dependencies
-RUN apt-get --yes install \
-        git \
-        motion \
-        ffmpeg \
-        v4l-utils \
-        python-pip \
-        libssl-dev \
-        libjpeg-dev \
-        libcurl4-openssl-dev
-
-# Python
-RUN apt-get --yes install \
-        python2.7 \
-        python-setuptools \
-        python-dev \
-        python-pip
-
-# Pip
-RUN pip install tornado jinja2 pillow pycurl
-
-# Fetch motioneye src
-RUN cd /tmp && git clone https://github.com/ccrisan/motioneye.git && \
-    cd /tmp/motioneye && python setup.py install && mkdir /etc/motioneye && \
-    cp /tmp/motioneye/extra/motioneye.conf.sample /etc/motioneye/motioneye.conf && \
-    rm -rf /tmp/*
-
-VOLUME /etc/motioneye
-VOLUME /var/run/motion
-VOLUME /var/lib/motion
-
-WORKDIR /motioneye
-CMD /usr/local/bin/meyectl startserver -c /etc/motioneye/motioneye.conf
-EXPOSE 8765
+VOLUME ["/var/lib/motioneye", "/etc/motioneye"]
