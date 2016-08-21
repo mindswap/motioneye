@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 MAINTAINER MindSwap <mindswap@ro.ru>
 
 RUN	apt-get update && \
-	apt-get install -q -y --no-install-recommends \
+	apt-get install -q -y \
 	motion \
 	ffmpeg \
 	v4l-utils \
